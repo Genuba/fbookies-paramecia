@@ -2,10 +2,20 @@ import difflib
 
 from pymongo_get_database import get_database
 
-db = get_database()
-betsByDate = db["betsByDate"]
 
-docData = betsByDate.find({})
+def main():
+    db = get_database()
+    betsByDate = db["betsByDate"]
+    betsByName = db["betsByName"]
+
+    docData = betsByDate.find({})
+    for rowBet in docData:
+        print("------------- " + rowBet["timestamp"] + " ---------------")
+        betBookieName_dic = getBetsByTeamName(rowBet)
+        match_dic = groupBetsByTeamMatch(betBookieName_dic)
+        print(match_dic)
+        bet_dic = {"timestamp": rowBet["timestamp"], "bets": match_dic}
+        betsByName.insert_one(bet_dic)
 
 
 def getBetsByTeamName(n):
@@ -23,7 +33,7 @@ def getBetsByTeamName(n):
 
 
 def getClosestMatchComparison(matchX, matchY):
-    print("matchX: " + matchX + " matchY: " + matchY)
+    # print("matchX: " + matchX + " matchY: " + matchY)
     matchListX = matchX.split(" vs ")
     matchListY = matchY.split(" vs ")
 
@@ -51,7 +61,7 @@ def groupBetsByTeamMatch(n):
                 for matchY in n[bookieY].keys():
                     if matchY in match_stop_dic[bookieY]:
                         continue
-                    print("bookieX: " + bookieX + " bookieY: " + bookieY)
+                    # print("bookieX: " + bookieX + " bookieY: " + bookieY)
                     closest_matches = getClosestMatchComparison(matchX, matchY)
 
                     if len(closest_matches) > 0 and len(closest_matches[0]) > 0:
@@ -69,8 +79,5 @@ def groupBetsByTeamMatch(n):
     return match_dic
 
 
-for rowBet in docData:
-    print("------------- " + rowBet["timestamp"] + " ---------------")
-    betBookieName_dic = getBetsByTeamName(rowBet)
-    match_dic = groupBetsByTeamMatch(betBookieName_dic)
-    print(match_dic)
+if __name__ == "__main__":
+    main()
