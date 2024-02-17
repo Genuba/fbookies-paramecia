@@ -64,15 +64,13 @@ def groupBetsByTeamMatch(n):
                         # stop cycling matchY
                         match_stop_dic[bookieY][matchY] = 1
 
-                    # score = difflib.SequenceMatcher(None, matchX, matchY).ratio()
-                    # print(
-                    #    "score for: " + matchX + " ----- " + matchY + " = " + str(score)
-                    # )
         # stop cycling bookieX
         bookie_stop_dic[bookieX] = 1
+    return match_dic
 
 
 for rowBet in docData:
     print("------------- " + rowBet["timestamp"] + " ---------------")
     betBookieName_dic = getBetsByTeamName(rowBet)
-    groupBetsByTeamMatch(betBookieName_dic)
+    match_dic = groupBetsByTeamMatch(betBookieName_dic)
+    print(match_dic)
