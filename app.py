@@ -16,34 +16,45 @@ def getBetsByTeamName(n):
         if not key in betBookieName_dic:
             betBookieName_dic[key] = {}
 
-        index = (
-            bet["teamA"]["name"]
-            + " vs "
-            + bet["teamB"]["name"]
-            + "----"
-            + bet["teamB"]["name"]
-            + " vs "
-            + bet["teamA"]["name"]
-        )
+        index = bet["teamA"]["name"] + " vs " + bet["teamB"]["name"]
 
         betBookieName_dic[key][index] = bet
     return betBookieName_dic
 
 
+def getClossestMatchComparison(matchX, matchY):
+    print("matchX: " + matchX + " matchY: " + matchY)
+    matchListX = matchX.split(" vs ")
+    matchListY = matchY.split(" vs ")
+
+    # comparation by team name in the match: A B = C D
+    # A C -> A D
+    # B C -> B D
+
+    closest_matches = [
+        difflib.get_close_matches(matchNameX, matchListY) for matchNameX in matchListX
+    ]
+    return closest_matches
+
+
 def groupBetsByTeamMatch(n):
-    print(n)
+    bookie_dic = {}
+    for bookieX in n.keys():
+        for matchX in n[bookieX].keys():
+            for bookieY in n.keys():
+                if bookieY == bookieX and not bookieX in bookie_dic:
+                    break
+                for matchY in n[bookieY].keys():
+                    closest_matches = getClossestMatchComparison(matchX, matchY)
+                    print(closest_matches)
 
+                    # score = difflib.SequenceMatcher(None, matchX, matchY).ratio()
+                    # print(
+                    #    "score for: " + matchX + " ----- " + matchY + " = " + str(score)
+                    # )
 
-#    keysList = list(n.keys())
-#    print(keysList)
-#
-#    for betMatch in n.keys():
-#        keysList.remove(betMatch)
-#        for key in keysList:
-#            if len(keysList):
-#                score = difflib.SequenceMatcher(None, betMatch, key).ratio()
-#                print("score for: " + betMatch + " ----- " + key + " = " + str(score))
-#
+        bookie_dic[bookieX] = 1
+
 
 for rowBet in docData:
     print("------------- " + rowBet["timestamp"] + " ---------------")
