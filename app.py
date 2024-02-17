@@ -46,8 +46,10 @@ def groupBetsByTeamMatch(n):
             for bookieY in n.keys():
                 if bookieY == bookieX and not bookieX in bookie_stop_dic:
                     break
+                if not bookieY in match_stop_dic:
+                    match_stop_dic[bookieY] = {}
                 for matchY in n[bookieY].keys():
-                    if matchY in match_stop_dic:
+                    if matchY in match_stop_dic[bookieY]:
                         break
                     closest_matches = getClosestMatchComparison(matchX, matchY)
                     print(closest_matches)
@@ -59,7 +61,7 @@ def groupBetsByTeamMatch(n):
                         match_dic[matchX][bookieY] = n[bookieY][matchY]
 
                         # stop cycling matchY
-                        match_stop_dic[matchY] = 1
+                        match_stop_dic[bookieY][matchY] = 1
 
                     # score = difflib.SequenceMatcher(None, matchX, matchY).ratio()
                     # print(
