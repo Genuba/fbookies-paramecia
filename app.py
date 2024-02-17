@@ -44,16 +44,17 @@ def groupBetsByTeamMatch(n):
     for bookieX in n.keys():
         for matchX in n[bookieX].keys():
             for bookieY in n.keys():
-                if bookieY == bookieX and not bookieX in bookie_stop_dic:
-                    break
+                if bookieY == bookieX or bookieY in bookie_stop_dic:
+                    continue
                 if not bookieY in match_stop_dic:
                     match_stop_dic[bookieY] = {}
                 for matchY in n[bookieY].keys():
                     if matchY in match_stop_dic[bookieY]:
-                        break
+                        continue
+                    print("bookieX: " + bookieX + " bookieY: " + bookieY)
                     closest_matches = getClosestMatchComparison(matchX, matchY)
-                    print(closest_matches)
-                    if len(closest_matches) > 0:
+
+                    if len(closest_matches) > 0 and len(closest_matches[0]) > 0:
                         if not matchX in match_dic:
                             match_dic[matchX] = {}
                             match_dic[matchX][bookieX] = n[bookieX][matchX]
