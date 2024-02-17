@@ -67,7 +67,7 @@ def groupBetsByTeamMatch(n):
                     # print(
                     #    "score for: " + matchX + " ----- " + matchY + " = " + str(score)
                     # )
-
+        # stop cycling bookieX
         bookie_stop_dic[bookieX] = 1
 
 
