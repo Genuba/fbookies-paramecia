@@ -22,7 +22,7 @@ def getBetsByTeamName(n):
     return betBookieName_dic
 
 
-def getClossestMatchComparison(matchX, matchY):
+def getClosestMatchComparison(matchX, matchY):
     print("matchX: " + matchX + " matchY: " + matchY)
     matchListX = matchX.split(" vs ")
     matchListY = matchY.split(" vs ")
@@ -32,28 +32,41 @@ def getClossestMatchComparison(matchX, matchY):
     # B C -> B D
 
     closest_matches = [
-        difflib.get_close_matches(matchNameX, matchListY) for matchNameX in matchListX
+        difflib.get_close_matches(matchX, matchListY) for matchX in matchListX
     ]
     return closest_matches
 
 
 def groupBetsByTeamMatch(n):
-    bookie_dic = {}
+    bookie_stop_dic = {}
+    match_stop_dic = {}
+    match_dic = {}
     for bookieX in n.keys():
         for matchX in n[bookieX].keys():
             for bookieY in n.keys():
-                if bookieY == bookieX and not bookieX in bookie_dic:
+                if bookieY == bookieX and not bookieX in bookie_stop_dic:
                     break
                 for matchY in n[bookieY].keys():
-                    closest_matches = getClossestMatchComparison(matchX, matchY)
+                    if matchY in match_stop_dic:
+                        break
+                    closest_matches = getClosestMatchComparison(matchX, matchY)
                     print(closest_matches)
+                    if len(closest_matches) > 0:
+                        if not matchX in match_dic:
+                            match_dic[matchX] = {}
+                            match_dic[matchX][bookieX] = n[bookieX][matchX]
+
+                        match_dic[matchX][bookieY] = n[bookieY][matchY]
+
+                        # stop cycling matchY
+                        match_stop_dic[matchY] = 1
 
                     # score = difflib.SequenceMatcher(None, matchX, matchY).ratio()
                     # print(
                     #    "score for: " + matchX + " ----- " + matchY + " = " + str(score)
                     # )
 
-        bookie_dic[bookieX] = 1
+        bookie_stop_dic[bookieX] = 1
 
 
 for rowBet in docData:
