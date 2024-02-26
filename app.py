@@ -15,7 +15,12 @@ def main():
         match_dic = groupBetsByTeamMatch(betBookieName_dic)
         print(match_dic)
         bet_dic = {"timestamp": rowBet["timestamp"], "bets": match_dic}
-        betsByName.insert_one(bet_dic)
+
+        betsByName.update_one(
+            filter={"timestamp": rowBet["timestamp"]},
+            update={"$set": bet_dic},
+            upsert=True,
+        )
 
 
 def getBetsByTeamName(n):
